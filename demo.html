@@ -1,0 +1,157 @@
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>LD:Mini模块加载器</title>
+        <link rel="stylesheet" href="reset.css" type="text/css" /> 
+        <style>
+            body{
+                margin:20px; 
+            }
+            h1{
+                font-size:50px;
+                color:#e1e31e;
+                margin-bottom:20px;
+            } 
+            h2{
+                font-size:16px;
+                margin-top:20px;
+                color:#666;
+            } 
+            .demo{
+                margin-top:20px; 
+            }
+            #demo1 p{
+                margin-top:20px;
+                font-size:30px;
+            }
+            #demo1 a{
+                color:red; 
+            }
+            pre{
+                margin-top:20px; 
+            }
+            #result{
+                margin-top:20px;
+                font-size:16px;
+                font-weight:bold;
+                color:#111; 
+            }
+            #result span{
+                margin-left:10px;
+            }
+            .error{
+                color:red;
+            }
+        </style>
+        <script src="ld.js"></script>
+    </head>
+    <body>
+        <h1>LD!</h1>
+        <h3>特性:</h3>
+        <p>1.体积小,用法方便</p>
+        <p>2.异步按需加载,提高性能,第一屏加载时间</p>
+        <p>3.实现JS颗粒化管理</p>
+        <p>4.模块名即是文件名,无需重新定义模块名</p>
+
+        <h2>使用方法: 在head里引入ld.js文件(可作用于mootools或jQuery)</h2>
+
+        <div id="demo1" class="demo">
+            <h4>demo1:直接执行函数</h4> 
+            <p><a href="http://www.shopex.cn" target="blink">ShopEx</a></p>
+            <pre>
+code:
+LD.use(function(){
+    $('demo1').getElement('p').tween('opacity','0.5');
+});
+        </pre>
+            <script>
+                LD.use(function(){ 
+                    $('demo1').getElement('p').tween('opacity','0.5');
+                }) 
+            </script>
+        </div>
+        <div id="demo2" class="demo">
+            <h4>demo2:添加模块</h4> 
+            <p>模块加载只是记录模块信息,并不加载</p>
+            <pre>
+code:
+LD.add('mod1.js');
+            </pre>
+            <script>
+                LD.add('mod1.js');
+            </script>
+        </div>    
+        <div id="demo3" class="demo">
+            <h4>demo3:使用模块</h4> 
+            <div id="demo3-result" class="result"></div>
+            <script>
+                LD.use('mod1',function(){
+                    $('demo3-result').appendText('-------模块1加载完毕');
+                }); 
+            </script>
+            <pre>
+code:
+LD.use('mod1',function(){
+       $('demo3-result').appendText('-------模块1加载完毕');
+}); 
+            </pre>
+            </div> 
+            <div id="demo4" class="demo">
+                <h4>demo4:添加多个模块</h4> 
+                <div id="demo4-result" class="result"></div>
+                <script>
+                    LD.add('mod1.js,mod2.js');
+                </script>
+                <pre>
+code:
+LD.add('mod1.js,mod2.js');
+            </pre>
+                </div> 
+                <div id="demo5" class="demo">
+                    <h4>demo5:使用多个模块</h4> 
+                    <div id="demo5-result" class="result"></div>
+                    <script>
+                        LD.use('mod1,mod2',function(){
+                            $('demo5-result').appendText('-----模块1,模块2加载完毕');
+                        });
+                    </script>
+                    <pre>
+code:
+LD.use('mod1.js,mod2',function(){
+       $('demo5-result').appendText('-----模块1,模块2加载完毕');
+});
+            </pre>
+                    </div>
+                    <div class="error">
+                        <p>API:</p>
+                        <p>LD.add('模块url(多个用逗号隔开)')</p>
+                        <p>LD.use('模块名(多个用逗号隔开)','回调函数','上下文环境')</p>
+                        <p>use方法执行多模块时，被依赖的模块必须放在前面</p>
+                    <div>
+                    <div id="result">
+                        <p>队列中可以被加载的模块:<span id="mods"></span></p> 
+                        <p>已加载的js模块:<span id="loadedJs"></span></p> 
+                        <p>已加载的css模块:<span id="loadedCss"></span></p> 
+                    </div>
+                    <script>
+                        LD.use(function(){
+                            for(var i in LD._mods){
+                                var node = $('result').getElement('#mods');
+                                var el = new Element("span[html="+LD._mods[i]+"]")
+                                el.inject(node);
+                            }
+                            for(var i in LD._loadedJs){
+                                var node = $('result').getElement('#loadedJs');
+                                var el = new Element("span[html="+LD._loadedJs[i]+"]")
+                                el.inject(node);
+                            }
+                            for(var i in LD._loadedCss){
+                                var node = $('result').getElement('#loadedCss');
+                                var el = new Element("span[html="+LD._loadedCss[i]+"]")
+                                el.inject(node);
+                            }
+                        })       
+                    </script>
+                </body>
+            </html>
