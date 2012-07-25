@@ -5,7 +5,7 @@
 
 (function(win, undefined) {
 
-	var _doc = win['document'] || document,
+	var _doc = win['document'] || document;
 
 	reCss = /\.css(?:\?|$)/i;
 
